@@ -23,10 +23,7 @@ func main() {
 			"World",
 		}
 		if err := writeJSON(w, body); err != nil {
-			err = writeError(w, err)
-			if err != nil {
-				log.Panic(err)
-			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
 
@@ -34,6 +31,8 @@ func main() {
 		switch r.Method {
 			case http.MethodGet:
 				GetFormsListHandler(w, r)
+			case http.MethodPost:
+				CreateFormHandler(w, r)
 			default:
 				OperationNotSupported(w, r)
 		}
@@ -43,8 +42,6 @@ func main() {
 		switch r.Method {
 			case http.MethodGet:
 				GetFormHandler(w, r)
-			case http.MethodPost:
-				CreateFormHandler(w, r)
 			case http.MethodPut:
 				UpdateFormHandler(w, r)
 			case http.MethodDelete:

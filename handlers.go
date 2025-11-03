@@ -1,6 +1,11 @@
 package main
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 var (
 	NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +24,7 @@ var (
 	GetFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")	
 		if len(id) == 0 {
-			NotFoundHandler(w, r)
+			http.NotFound(w, r)
 			return
 		}
 		form, err := GetForm(id)
@@ -28,7 +33,7 @@ var (
 			return
 		}
 		if form == nil {
-			http.NotFoundHandler() 
+			http.NotFound(w, r)
 			return
 		}
 		err = writeJSON(w, form)
@@ -37,14 +42,50 @@ var (
 		}
 	})
 
+	// CreateFormHandler creates a new form reading from the application/x-www-form-urlencoded
+	// body of the request
 	CreateFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+		form := CreateFormModel {
+			Name: r.PostFormValue("name"),
+			CreatedDate: time.Now().UTC().Unix(),
+		}
+		id, err := AddForm(form)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Add("Location", fmt.Sprintf("/forms/%s", id))
+		w.WriteHeader(http.StatusCreated)
 	})
 
 	DeleteFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")	
+		if len(id) == 0 {
+			http.NotFound(w, r)
+			return
+		}
+		err := RemoveForm(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	UpdateFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+		id := r.PathValue("id")	
+		if len(id) == 0 {
+			http.NotFound(w, r)
+			return
+		}
+		formModel := FormModel{}
+		reader := json.NewDecoder(r.Body)
+		reader.Decode(&formModel)
+		err := UpdateForm(id, formModel)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	})
 )
