@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"slices"
 
@@ -17,13 +16,13 @@ func AddForm(newValue CreateFormModel) (string, error) {
 	// but it works for now
 	for _, form := range forms {
 		if form.Name == newValue.Name {
-			return "", fmt.Errorf("Form with name %s already exists", newValue.Name) 
+			return "", fmt.Errorf("Form with name %s already exists", newValue.Name)
 		}
 	}
-	id := uuid.New()	
-	newFormValue := FormModel {
-		ID: id,
-		Name: newValue.Name,
+	id := uuid.New()
+	newFormValue := FormModel{
+		ID:          id,
+		Name:        newValue.Name,
 		CreatedDate: newValue.CreatedDate,
 	}
 	forms = append(forms, &newFormValue)
@@ -32,7 +31,7 @@ func AddForm(newValue CreateFormModel) (string, error) {
 
 func RemoveForm(id string) error {
 	forms = slices.DeleteFunc(forms, func(form *FormModel) bool {
-		return form.ID.String() == id	
+		return form.ID.String() == id
 	})
 	return nil
 }
@@ -43,7 +42,7 @@ func UpdateForm(id string, updatedValue FormModel) error {
 		return err
 	}
 	if form == nil {
-		return fmt.Errorf("No form with the ID %s exists", id)	
+		return fmt.Errorf("No form with the ID %s exists", id)
 	}
 	form.Name = updatedValue.Name
 	return nil // leave for now and leave open for returning an error

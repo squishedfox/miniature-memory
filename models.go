@@ -19,6 +19,6 @@ type (
 	}
 	GetFormsListResponse struct {
 		Forms []FormModel `json:"forms"`
-		Count int64 `json:"count"`
+		Count int64       `json:"count"`
 	}
 )

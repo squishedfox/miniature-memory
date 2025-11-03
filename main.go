@@ -11,7 +11,7 @@ const (
 
 func main() {
 	server := http.NewServeMux()
-	
+
 	server.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			OperationNotSupported(w, r)
@@ -19,7 +19,7 @@ func main() {
 		}
 		body := struct {
 			Hello string
-		} {
+		}{
 			"World",
 		}
 		if err := writeJSON(w, body); err != nil {
@@ -29,25 +29,25 @@ func main() {
 
 	server.HandleFunc("/forms", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
-			case http.MethodGet:
-				GetFormsListHandler(w, r)
-			case http.MethodPost:
-				CreateFormHandler(w, r)
-			default:
-				OperationNotSupported(w, r)
+		case http.MethodGet:
+			GetFormsListHandler(w, r)
+		case http.MethodPost:
+			CreateFormHandler(w, r)
+		default:
+			OperationNotSupported(w, r)
 		}
 
 	})
 	server.HandleFunc("/forms/{id}", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
-			case http.MethodGet:
-				GetFormHandler(w, r)
-			case http.MethodPut:
-				UpdateFormHandler(w, r)
-			case http.MethodDelete:
-				DeleteFormHandler(w, r)
-			default:
-				OperationNotSupported(w, r)	
+		case http.MethodGet:
+			GetFormHandler(w, r)
+		case http.MethodPut:
+			UpdateFormHandler(w, r)
+		case http.MethodDelete:
+			DeleteFormHandler(w, r)
+		default:
+			OperationNotSupported(w, r)
 
 		}
 	})

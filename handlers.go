@@ -22,7 +22,7 @@ var (
 	})
 
 	GetFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")	
+		id := r.PathValue("id")
 		if len(id) == 0 {
 			http.NotFound(w, r)
 			return
@@ -42,11 +42,9 @@ var (
 		}
 	})
 
-	// CreateFormHandler creates a new form reading from the application/x-www-form-urlencoded
-	// body of the request
 	CreateFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		form := CreateFormModel {
-			Name: r.PostFormValue("name"),
+		form := CreateFormModel{
+			Name:        r.PostFormValue("name"),
 			CreatedDate: time.Now().UTC().Unix(),
 		}
 		id, err := AddForm(form)
@@ -59,7 +57,7 @@ var (
 	})
 
 	DeleteFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")	
+		id := r.PathValue("id")
 		if len(id) == 0 {
 			http.NotFound(w, r)
 			return
@@ -73,7 +71,7 @@ var (
 	})
 
 	UpdateFormHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")	
+		id := r.PathValue("id")
 		if len(id) == 0 {
 			http.NotFound(w, r)
 			return
